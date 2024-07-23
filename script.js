@@ -60,3 +60,5 @@ function getBotResponse(input) {
 
   return response; // Return the determined response
 }
+
+

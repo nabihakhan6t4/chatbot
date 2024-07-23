@@ -1,4 +1,4 @@
-/* General Styles */
+
 body {
   font-family: 'Arial', sans-serif;
   background-color: #e0f7fa;
@@ -216,4 +216,13 @@ body {
 [data-theme="dark"] .btn-primary:hover {
   background-color: #00332d;
   border-color: #002124;
+}
+.box{
+  height: 100px;
+  width: 100px;
+  background: aquamarine;
+  gap: 10px;
+ color: black;
+  border: 1px solid black;
+  margin: 5px;
 }
