@@ -1,64 +1,68 @@
-// Function to handle sending a message
-function sendMessage() {
-  // Get the user's input from the input field
-  var userInput = document.getElementById('user-input').value;
-  // Get the chatbox element where messages are displayed
-  var chatbox = document.getElementById('chatbox');
-  // Get the typing indicator element
-  var typingIndicator = document.getElementById('typing-indicator');
+$(document).ready(function() {
+    // Code inside this function runs when the document is fully loaded
+    // The $ symbol is a shortcut for jQuery, a JavaScript library
+    // $(document).ready ensures that the code runs only after the DOM is fully loaded
 
-  // Check if the input field is empty
-  if (userInput.trim() === '') {
-      return; // Do nothing if input is empty
-  }
+    // Event handler for click event on send button
+    $('#send-btn').click(function() {
+        sendMessage(); // Call the sendMessage function when the button is clicked
+    });
 
-  // Create a new div element to display the user's message
-  var userMessage = document.createElement('div');
-  userMessage.className = 'user-message'; // Apply user message styling
-  userMessage.textContent = 'You: ' + userInput; // Set the text content to include the user input
-  chatbox.appendChild(userMessage); // Add the user message to the chatbox
+    // Event handler for keypress event in the message input field
+    $('#message-input').keypress(function(e) {
+        if (e.which === 13) { // Check if the Enter key (key code 13) is pressed
+            sendMessage(); // Call the sendMessage function when Enter key is pressed
+        }
+    });
 
-  // Show the typing indicator to simulate the bot typing
-  typingIndicator.textContent = 'Bot is typing...';
+    // Function to handle sending messages
+    function sendMessage() {
+        var message = $('#message-input').val(); // Get the value of the message input field
+        if (message.trim() !== '') { // Check if the message is not empty or just whitespace
+            appendMessage('user', message); // Append the user message to the chat
+            $('#message-input').val(''); // Clear the input field
+            setTimeout(function() { // Delay the bot response by 1000 milliseconds (1 second)
+                appendMessage('bot', getBotResponse(message)); // Append the bot response to the chat
+            }, 1000);
+        }
+    }
 
-  // Simulate a delay before showing the bot's response
-  setTimeout(function() {
-      // Hide the typing indicator after the delay
-      typingIndicator.textContent = '';
+    // Function to append messages to the chat window
+    function appendMessage(sender, message) {
+        // Determine the CSS class based on the sender (user or bot)
+        var messageClass = sender === 'user' ? 'message user' : 'message bot';
+        // Create HTML for the message
+        var messageElement = `
+            <div class="${messageClass}">
+                <div class="message-content">${message}</div>
+            </div>
+        `;
+        $('.messages').append(messageElement); // Append the message HTML to the chat window
+        // Scroll to the bottom of the chat window to show the latest message
+        $('.chatbox-body').scrollTop($('.chatbox-body')[0].scrollHeight);
+    }
 
-      // Create a new div element to display the bot's response
-      var botMessage = document.createElement('div');
-      botMessage.className = 'bot-message'; // Apply bot message styling
+    // Function to generate bot responses based on user messages
+    function getBotResponse(message) {
+        // Convert message to lowercase for case-insensitive comparison
+        var lowerCaseMessage = message.toLowerCase();
 
-      // Get the bot's response based on the user's input
-      var response = getBotResponse(userInput);
-      botMessage.textContent = 'Bot: ' + response; // Set the text content to include the bot's response
-      chatbox.appendChild(botMessage); // Add the bot message to the chatbox
+        // Simple bot response logic
+        if (lowerCaseMessage.includes('hello') || lowerCaseMessage.includes('hi') || lowerCaseMessage.includes('assalamualaikum')) {
+            return 'Hello! How can I help you today?'; // Response for greetings
+        } else if (lowerCaseMessage.includes('how are you')) {
+            return 'I am fine thanks for asking. What about you? 🐺'; // Response for asking about the bot's well-being
+        }else if (lowerCaseMessage.includes('i am fine')) {
+            return 'good to hear this 🐺'; 
+        }  
+        else if (lowerCaseMessage.includes('okay bye')) {
+            return 'Okay, goodbye! Take care!! 😊👋'; // Response for saying goodbye
+        }
+        return 'Sorry, I did not understand that.'; // Default response if no other condition is met
+    }
 
-      // Clear the input field for the next message
-      document.getElementById('user-input').value = '';
-
-      // Scroll to the bottom of the chatbox to show the latest message
-      chatbox.scrollTop = chatbox.scrollHeight;
-  }, 1000); // 1 second delay for typing effect
-}
-
-// Function to determine the bot's response based on user input
-function getBotResponse(input) {
-  var response;
-
-  // Check the user's input and provide an appropriate response
-  if (input.toLowerCase().includes('hello')) {
-      response = 'Hi there! How can I help you today?'; // Greeting response
-  } else if (input.toLowerCase().includes('how are you')) {
-      response = 'I\'m doing great, thanks for asking! How about you?'; // Response for asking bot's well-being
-  } else if (input.toLowerCase().includes('bye')) {
-      response = 'Goodbye! Have a wonderful day!'; // Farewell response
-  } else {
-      response = 'I\'m not sure how to respond to that. Could you please rephrase?'; // Default response for unrecognized input
-  }
-
-  return response; // Return the determined response
-}
-
-
+    // Event handler for click event on chatbox close button
+    $('.chatbox-close').click(function() {
+        $('.chatbox').hide(); // Hide the chatbox when the close button is clicked
+    });
+});
